@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>صيدلية الهدى | تكريت شارع الأربعين</title>
+    <!-- خط Cairo ورسومات FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #0284c7;       /* Firebase/Medical Blue */
+            --primary-dark: #0369a1;
+            --accent: #10b981;        /* Emerald Green */
+            --accent-hover: #059669;
+            --bg-light: #f0f9ff;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --danger: #ef4444;
+            --shadow: 0 10px 20px -5px rgba(2, 132, 199, 0.15);
+        }
+
+        /* --- Strict Reset & Layout Rules --- */
+        html {
+            overflow-x: hidden;
+            width: 100%;
+            scroll-behavior: smooth;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            max-width: 100%; /* Prevents any element from exceeding its parent */
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
+
+        img, iframe {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* --- Header Navigation --- */
+        header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            padding: 1rem 1.5rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            width: 100%;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .logo-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+
+        .logo-sub {
+            font-size: 0.8rem;
+            opacity: 0.95;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 0.6rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.55rem 1.1rem;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            font-size: 0.88rem;
+            white-space: nowrap;
+        }
+
+        .btn-light {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            backdrop-filter: blur(5px);
+        }
+
+        .btn-light:hover {
+            background-color: white;
+            color: var(--primary-dark);
+        }
+
+        .cart-btn-wrapper {
+            position: relative;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 800;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--primary-dark);
+        }
+
+        /* --- Welcome Banner --- */
+        .welcome-banner {
+            background: linear-gradient(to right, #ecfdf5, #f0f9ff);
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0.7rem 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--primary-dark);
+            font-weight: 700;
+            line-height: 1.5;
+            width: 100%;
+        }
+
+        .welcome-banner span {
+            color: var(--accent-hover);
+            margin: 0 0.3rem;
+        }
+
+        /* --- Hero Slider --- */
+        .slider-section {
+            max-width: 1200px;
+            margin: 1.2rem auto 0;
+            padding: 0 1rem;
+            width: 100%;
+        }
+
+        .slider-container {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            height: 260px;
+            background: #0f172a;
+            width: 100%;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out, transform 0.8s ease;
+            transform: scale(1.02);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem 2.5rem;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .slide-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(270deg, rgba(3, 105, 161, 0.92) 0%, rgba(15, 23, 42, 0.65) 100%);
+            z-index: 1;
+        }
+
+        .slide-content {
+            position: relative;
+            z-index: 2;
+            color: white;
+            max-width: 550px;
+        }
+
+        .slide-badge {
+            background: var(--accent);
+            padding: 0.25rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+
+        .slide-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.4rem;
+            line-height: 1.3;
+        }
+
+        .slide-desc {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-bottom: 0.8rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .slider-dots {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            z-index: 10;
+        }
+
+        .dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .dot.active {
+            background: var(--accent);
+            width: 24px;
+            border-radius: 10px;
+        }
+
+        /* --- Smart Search Bar --- */
+        .search-section {
+            max-width: 1200px;
+            margin: 1.5rem auto 0;
+            padding: 0 1rem;
+            width: 100%;
+        }
+
+        .search-box {
+            position: relative;
+            max-width: 650px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.9rem 1.2rem 0.9rem 3rem;
+            border-radius: 50px;
+            border: 2px solid #e2e8f0;
+            font-size: 0.95rem;
+            box-shadow: 0 8px 20px -5px rgba(0, 0, 0, 0.04);
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.15);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        /* --- Products Grid (Fully Responsive) --- */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            flex-grow: 1;
+            width: 100%;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.3rem;
+            margin-bottom: 1.2rem;
+            color: var(--primary-dark);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1.2rem;
+            width: 100%;
+        }
+
+        .product-card {
+            background: var(--surface);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #f1f5f9;
+            width: 100%;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 25px -5px rgba(2, 132, 199, 0.2);
+        }
+
+        .product-img-wrapper {
+            height: 150px;
+            width: 100%;
+            background-color: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .product-img-wrapper img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            transition: transform 0.3s;
+        }
+
+        .product-img-wrapper:hover img {
+            transform: scale(1.08);
+        }
+
+        .zoom-badge {
+            position: absolute;
+            bottom: 6px; left: 6px;
+            background: rgba(15, 23, 42, 0.7);
+            color: white;
+            padding: 0.15rem 0.45rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            pointer-events: none;
+        }
+
+        .product-info {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .product-category {
+            font-size: 0.75rem;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .product-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 0.2rem 0 0.4rem;
+            color: var(--text-main);
+            line-height: 1.3;
+        }
+
+        .product-barcode {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            word-break: break-all;
+        }
+
+        .price-container {
+            background-color: var(--bg-light);
+            border-radius: 8px;
+            padding: 0.5rem 0.7rem;
+            margin-top: auto;
+            margin-bottom: 0.7rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+
+        .price-label {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .price-val {
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+
+        .buy-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.4rem;
+        }
+
+        .btn-buy-option {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.78rem;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+        }
+
+        .btn-buy-option:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-buy-option.strip {
+            background-color: var(--accent);
+        }
+
+        .btn-buy-option.strip:hover {
+            background-color: var(--accent-hover);
+        }
+
+        /* --- Footer --- */
+        footer {
+            background-color: #0f172a;
+            color: white;
+            padding: 2rem 1rem 1.2rem;
+            margin-top: auto;
+            width: 100%;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-col h4 {
+            color: var(--accent);
+            margin-bottom: 0.8rem;
+            font-size: 1.05rem;
+        }
+
+        .footer-col p {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            border-top: 1px solid #334155;
+            padding-top: 1rem;
+            text-align: center;
+            font-size: 0.88rem;
+            color: #cbd5e1;
+            font-weight: 700;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            align-items: center;
+        }
+
+        .designer-tag {
+            color: #fde047;
+        }
+
+        /* --- Modals (Responsive Controlled) --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 0.8rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border-radius: 18px;
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 1.5rem;
+            position: relative;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.3);
+            animation: modalFadeIn 0.25s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 0.8rem; left: 0.8rem;
+            background: #f1f5f9;
+            border: none;
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .close-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Lightbox */
+        .lightbox-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.88);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .lightbox-modal.active { display: flex; }
+
+        .lightbox-img {
+            max-width: 95%;
+            max-height: 85vh;
+            border-radius: 10px;
+            object-fit: contain;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 15px; left: 15px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        /* Cart & Admin Order Details */
+        .cart-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.7rem 0;
+            border-bottom: 1px solid #e2e8f0;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .cart-item-details { flex-grow: 1; min-width: 140px; }
+        .cart-item-title { font-weight: 700; font-size: 0.88rem; }
+        .cart-item-type { font-size: 0.75rem; color: var(--accent); font-weight: 700; }
+
+        .cart-qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .qty-btn {
+            width: 26px; height: 26px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            background: white;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .order-card {
+            background: var(--bg-light);
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 0.8rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 1px dashed #cbd5e1;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .order-type-badge {
+            padding: 0.15rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .type-prescription { background: #e0f2fe; color: #0369a1; }
+        .type-cart { background: #dcfce7; color: #15803d; }
+
+        .prescription-img-thumb {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid var(--primary);
+        }
+
+        /* Forms & Tables */
+        .form-group { margin-bottom: 0.8rem; }
+        .form-group label { display: block; font-weight: 700; margin-bottom: 0.25rem; font-size: 0.85rem; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.65rem 0.8rem;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            outline: none;
+            font-size: 0.9rem;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0.8rem;
+        }
+
+        .admin-table th, .admin-table td {
+            padding: 0.6rem;
+            text-align: right;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.8rem;
+        }
+
+        .admin-table th { background-color: var(--bg-light); color: var(--primary-dark); }
+        .admin-thumb { width: 36px; height: 36px; border-radius: 6px; object-fit: cover; }
+
+        .btn-sm { padding: 0.25rem 0.5rem; font-size: 0.75rem; border-radius: 6px; }
+        .btn-edit { background: #3b82f6; color: white; }
+        .btn-delete { background: var(--danger); color: white; }
+
+        .tab-buttons {
+            display: flex;
+            gap: 0.4rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+            overflow-x: auto;
+            padding-bottom: 0.3rem;
+        }
+
+        .tab-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 700;
+            color: var(--text-muted);
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+            font-size: 0.85rem;
+        }
+
+        .tab-btn.active { color: var(--primary); border-color: var(--primary); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* --- MEDIA QUERIES FOR SMALL SCREENS & PHONES --- */
+        @media (max-width: 768px) {
+            .nav-container {
+                justify-content: center;
+                text-align: center;
+            }
+            .logo-box { align-items: center; }
+            .nav-actions { width: 100%; justify-content: center; margin-top: 0.3rem; }
+            
+            .slide { padding: 1rem; }
+            .slide-title { font-size: 1.25rem; }
+            .slide-desc { font-size: 0.8rem; }
+            .slider-container { height: 220px; }
+
+            .modal-content { padding: 1.2rem 1rem; }
+        }
+
+        @media (max-width: 480px) {
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr); /* Elegant 2 columns for mobile */
+                gap: 0.6rem;
+            }
+            .product-card { border-radius: 12px; }
+            .product-img-wrapper { height: 120px; }
+            .product-info { padding: 0.6rem; }
+            .product-title { font-size: 0.88rem; }
+            .price-container { padding: 0.4rem; font-size: 0.75rem; }
+            .buy-actions { grid-template-columns: 1fr; } /* Stack buy buttons on small screens */
+            .btn-buy-option { padding: 0.4rem; font-size: 0.72rem; }
+            
+            .search-box input { padding: 0.75rem 1rem 0.75rem 2.5rem; font-size: 0.85rem; }
+            .welcome-banner { font-size: 0.8rem; padding: 0.5rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="nav-container">
+            <div class="logo-box">
+                <div class="logo">
+                    <i class="fa-solid fa-hospital"></i>
+                    <span>صيدلية الهدى</span>
+                </div>
+                <div class="logo-sub">
+                    <i class="fa-solid fa-location-dot"></i> تكريت - شارع الأربعين (قرب شركة زين)
+                </div>
+            </div>
+
+            <div class="nav-actions">
+                <button class="btn btn-light" onclick="openModal('prescriptionModal')">
+                    <i class="fa-solid fa-file-prescription"></i> رفع روشتة
+                </button>
+
+                <div class="cart-btn-wrapper">
+                    <button class="btn btn-light" onclick="openModal('cartModal')">
+                        <i class="fa-solid fa-cart-shopping"></i> السلة
+                    </button>
+                    <span class="cart-badge" id="cartBadge">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Welcome Customer Banner -->
+    <div class="welcome-banner">
+        <i class="fa-solid fa-heart-pulse"></i> صحتك وراحتك غايتنا الأولى <span>•</span> صيدلية الهدى ترحب بكم يومياً <span>( صباحاً ومساءً )</span> <span>•</span> خدمتكم شرف لنا
+    </div>
+
+    <!-- Responsive Hero Slider -->
+    <section class="slider-section">
+        <div class="slider-container" id="heroSlider">
+            <div class="slider-dots" id="sliderDots"></div>
+        </div>
+    </section>
+
+    <!-- Smart Search Bar -->
+    <section class="search-section">
+        <div class="search-box">
+            <input type="text" id="searchInput" oninput="handleSearch()" placeholder="ابحث باسم الدواء، رقم الباركود، أو التصنيف...">
+            <i class="fa-solid fa-barcode"></i>
+        </div>
+    </section>
+
+    <!-- Main Content Grid -->
+    <main class="container">
+        <div class="section-title">
+            <i class="fa-solid fa-capsules"></i>
+            <h3>دليل الأدوية والمنتجات الطبية</h3>
+        </div>
+
+        <div class="products-grid" id="productsGrid">
+            <!-- Dynamic Products Loading -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4><i class="fa-solid fa-hospital"></i> صيدلية الهدى - تكريت</h4>
+                <p>نعمل بشغف لتقديم أفضل الخدمات الصيدلانية والرعاية الصحية. صحتكم وراحتكم أمانة نعتز بها دائماً.</p>
+            </div>
+            <div class="footer-col">
+                <h4><i class="fa-solid fa-map-location-dot"></i> العنوان وساعات العمل</h4>
+                <p><i class="fa-solid fa-location-pin"></i> تكريت - شارع الأربعين - قرب شركة زين</p>
+                <p><i class="fa-solid fa-clock"></i> نفتح أبوابنا لكم يومياً: <strong>صباحاً ومساءً</strong></p>
+            </div>
+            <div class="footer-col">
+                <h4><i class="fa-solid fa-hand-holding-medical"></i> راحة الزبون</h4>
+                <p>نوفر لكم خدمة رفع الوصفات الطبية أونلاين، مع إمكانية الشراء بالشريط أو بالباكيت لراحة كافة المراجعين.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div>جميع الحقوق محفوظة لصيدلية الهدى &copy; 2026</div>
+            <div class="designer-tag">تم التصميم من قبل مصطفى نادر 07832270700</div>
+        </div>
+    </footer>
+
+    <!-- Image Zoom Lightbox Modal -->
+    <div class="lightbox-modal" id="lightboxModal" onclick="closeLightbox()">
+        <span class="lightbox-close">&times;</span>
+        <img src="" class="lightbox-img" id="lightboxImg" onclick="event.stopPropagation()">
+    </div>
+
+    <!-- Modal: Prescription Upload -->
+    <div class="modal" id="prescriptionModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('prescriptionModal')">&times;</button>
+            <h3 style="color: var(--primary-dark); margin-bottom: 0.8rem; font-size: 1.1rem;">
+                <i class="fa-solid fa-upload"></i> رفع الوصفة الطبية (الروشتة)
+            </h3>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.8rem;">
+                ارفق صورة الروشتة وسيقوم كادر صيدلية الهدى بتجهيز العلاج لكم بكل دقة وراحة.
+            </p>
+            <form onsubmit="handlePrescriptionSubmit(event)">
+                <div class="form-group">
+                    <label>اسم المريض الكامل</label>
+                    <input type="text" id="prescCustomerName" required placeholder="مثال: أحمد الجبوري">
+                </div>
+                <div class="form-group">
+                    <label>رقم الهاتف للتواصل</label>
+                    <input type="tel" id="prescCustomerPhone" required placeholder="مثال: 07700000000">
+                </div>
+                <div class="form-group">
+                    <label>ملاحظات إضافية (اختياري)</label>
+                    <input type="text" id="prescNotes" placeholder="مثال: يرجى التوصيل إلى شارع الأربعين">
+                </div>
+                <div class="form-group">
+                    <label>صورة الوصفة الطبية</label>
+                    <input type="file" accept="image/*" onchange="previewImage(this, 'prescriptionPreviewImg')" required>
+                </div>
+                <div style="height: 120px; border: 2px dashed #cbd5e1; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #fafafa;" id="prescriptionPreview">
+                    <img id="prescriptionPreviewImg" src="" style="max-height: 100%; display: none;">
+                    <span id="prescriptionText" style="color: var(--text-muted); font-size: 0.85rem;">معاينة صورة الروشتة</span>
+                </div>
+                <button type="submit" class="btn btn-buy-option" style="width: 100%; margin-top: 1rem; padding: 0.7rem; font-size: 0.9rem;">
+                    <i class="fa-solid fa-paper-plane"></i> إرسال الروشتة إلى الصيدلية
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Shopping Cart & Checkout -->
+    <div class="modal" id="cartModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('cartModal')">&times;</button>
+            <h3 style="color: var(--primary-dark); margin-bottom: 0.8rem; font-size: 1.1rem;">
+                <i class="fa-solid fa-cart-shopping"></i> سلة المشتريات
+            </h3>
+
+            <div id="cartItemsList">
+                <!-- Cart Items rendered here -->
+            </div>
+
+            <div id="cartSummary" style="margin-top: 1.2rem; display: none;">
+                <div style="display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: 800; border-top: 2px solid #e2e8f0; padding-top: 0.8rem; margin-bottom: 0.8rem;">
+                    <span>المجموع الكلي:</span>
+                    <span style="color: var(--primary-dark);" id="cartTotalVal">0 د.ع</span>
+                </div>
+
+                <form onsubmit="handleCartCheckout(event)" style="background: var(--bg-light); padding: 0.8rem; border-radius: 12px;">
+                    <h4 style="margin-bottom: 0.6rem; color: var(--primary-dark); font-size: 0.95rem;">معلومات التوصيل والاستلام</h4>
+                    <div class="form-group">
+                        <label>الاسم الكامل</label>
+                        <input type="text" id="checkoutName" required placeholder="مثال: علي كريم">
+                    </div>
+                    <div class="form-group">
+                        <label>رقم الهاتف</label>
+                        <input type="tel" id="checkoutPhone" required placeholder="مثال: 07800000000">
+                    </div>
+                    <div class="form-group">
+                        <label>العنوان / الملاحظات</label>
+                        <input type="text" id="checkoutAddress" placeholder="مثال: تكريت - حي القادسية">
+                    </div>
+                    <button type="submit" class="btn btn-buy-option" style="width: 100%; padding: 0.7rem; font-size: 0.9rem;">
+                        <i class="fa-solid fa-check-circle"></i> تأكيد وإرسال الطلب
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Admin Password Modal -->
+    <div class="modal" id="adminAuthModal">
+        <div class="modal-content" style="max-width: 380px; text-align: center;">
+            <button class="close-btn" onclick="closeModal('adminAuthModal')">&times;</button>
+            <i class="fa-solid fa-lock" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 0.8rem;"></i>
+            <h3 style="font-size: 1.1rem;">لوحة التحكم المخفية</h3>
+            <p style="color: var(--text-muted); margin-bottom: 0.8rem; font-size: 0.8rem;">أدخل كلمة المرور (الافتراضية: 1234)<br><small>(يمكنك الخروج بالضغط على Ctrl + Shift + A)</small></p>
+            <form onsubmit="verifyAdminPassword(event)">
+                <div class="form-group">
+                    <input type="password" id="adminPassInput" placeholder="كلمة المرور" required style="text-align: center; font-size: 1.1rem;">
+                </div>
+                <button type="submit" class="btn btn-buy-option" style="width: 100%; padding: 0.6rem;">دخول</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hidden Admin Panel Modal -->
+    <div class="modal" id="adminPanelModal">
+        <div class="modal-content" style="max-width: 850px;">
+            <button class="close-btn" onclick="closeModal('adminPanelModal')">&times;</button>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; flex-wrap: wrap; gap: 0.5rem;">
+                <h3 style="color: var(--primary-dark); font-size: 1.1rem;">
+                    <i class="fa-solid fa-user-gear"></i> إدارة صيدلية الهدى
+                </h3>
+                <button class="btn btn-sm btn-delete" onclick="hideAdminCompletely()">
+                    <i class="fa-solid fa-eye-slash"></i> إغلاق وإخفاء اللوحة
+                </button>
+            </div>
+
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchTab('ordersTab', this)">
+                    <i class="fa-solid fa-inbox"></i> الوارد من الطلبات <span id="ordersCountBadge" style="background: var(--danger); color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.7rem;">0</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('productsTab', this)">
+                    <i class="fa-solid fa-pills"></i> إدارة الأدوية والأسعار
+                </button>
+                <button class="tab-btn" onclick="switchTab('settingsTab', this)">
+                    <i class="fa-solid fa-key"></i> تغيير كلمة المرور
+                </button>
+            </div>
+
+            <!-- Tab 1: Incoming Orders -->
+            <div class="tab-content active" id="ordersTab">
+                <h4 style="margin-bottom: 0.8rem; color: var(--primary-dark); font-size: 0.95rem;">الطلبات والروشتات الواردة من الزبائن</h4>
+                <div id="adminOrdersContainer">
+                    <!-- Dynamic Orders List -->
+                </div>
+            </div>
+
+            <!-- Tab 2: Products Management -->
+            <div class="tab-content" id="productsTab">
+                <form id="productForm" onsubmit="saveProduct(event)" style="background: var(--bg-light); padding: 1rem; border-radius: 12px; margin-bottom: 1.2rem;">
+                    <h4 id="formTitle" style="margin-bottom: 0.6rem; color: var(--primary-dark); font-size: 0.95rem;">إضافة دواء جديد</h4>
+                    <input type="hidden" id="editProductId">
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.6rem;">
+                        <div class="form-group">
+                            <label>اسم الدواء</label>
+                            <input type="text" id="prodName" required placeholder="مثال: بنادول اكسترا">
+                        </div>
+                        <div class="form-group">
+                            <label>الباركود (Barcode)</label>
+                            <input type="text" id="prodBarcode" required placeholder="مثال: 629110012345">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.6rem;">
+                        <div class="form-group">
+                            <label>سعر الباكيت (د.ع)</label>
+                            <input type="number" id="prodPriceBox" required placeholder="مثال: 5000">
+                        </div>
+                        <div class="form-group">
+                            <label>سعر الشريط (د.ع)</label>
+                            <input type="number" id="prodPriceStrip" required placeholder="مثال: 1000">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.6rem;">
+                        <div class="form-group">
+                            <label>التصنيف</label>
+                            <select id="prodCategory">
+                                <option value="مسكنات">مسكنات وآلام</option>
+                                <option value="مضادات حيوية">مضادات حيوية</option>
+                                <option value="فيتامينات">فيتامينات ومكملات</option>
+                                <option value="عناية بالشعر والبشرة">عناية بالشعر والبشرة</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>صورة الدواء</label>
+                            <input type="file" accept="image/*" onchange="handleAdminImg(this)">
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 0.5rem; margin-top: 0.4rem;">
+                        <button type="submit" class="btn btn-buy-option" style="width: auto; padding: 0.4rem 1.2rem;">حفظ الدواء</button>
+                        <button type="button" class="btn" style="background:#cbd5e1; color:#334155" onclick="resetAdminForm()">إلغاء</button>
+                    </div>
+                </form>
+
+                <h4 style="font-size: 0.95rem; margin-bottom: 0.5rem;">قائمة الأدوية المخزنة</h4>
+                <div style="overflow-x: auto; width: 100%;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>الصورة</th>
+                                <th>الاسم</th>
+                                <th>الباركود</th>
+                                <th>الباكيت</th>
+                                <th>الشريط</th>
+                                <th>إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminProductsTable">
+                            <!-- Rows loaded via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab 3: Settings -->
+            <div class="tab-content" id="settingsTab">
+                <form onsubmit="changeAdminPassword(event)" style="max-width: 380px; margin: 0.8rem 0;">
+                    <div class="form-group">
+                        <label>كلمة المرور الحالية</label>
+                        <input type="password" id="currentPassInput" required>
+                    </div>
+                    <div class="form-group">
+                        <label>كلمة المرور الجديدة</label>
+                        <input type="password" id="newPassInput" required>
+                    </div>
+                    <button type="submit" class="btn btn-buy-option" style="width: auto; padding: 0.5rem 1.2rem;">تحديث كلمة المرور</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Local state & Admin Password
+        let adminPassword = localStorage.getItem("huda_pharmacy_admin_pass") || "1234";
+
+        // Initial Products List
+        let products = [
+            {
+                id: 1,
+                name: "بنادول اكسترا (Panadol Extra)",
+                barcode: "629100112233",
+                category: "مسكنات",
+                priceBox: 4000,
+                priceStrip: 1000,
+                image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&q=80",
+                featured: true,
+                desc: "صيدلية الهدى توفر لكم المسكنات الفعالة للأوجاع والصداع لراحتكم."
+            },
+            {
+                id: 2,
+                name: "فيتامين سي 1000 فوار",
+                barcode: "629100445566",
+                category: "فيتامينات",
+                priceBox: 6000,
+                priceStrip: 1500,
+                image: "https://images.unsplash.com/photo-1577401239170-897942555fb3?w=500&q=80",
+                featured: true,
+                desc: "يعزز مناعة جسمكم ويحميكم طوال الفترات الصباحية والمسائية."
+            },
+            {
+                id: 3,
+                name: "أومبرازول 20 ملغ للمعدة",
+                barcode: "629100778899",
+                category: "مسكنات",
+                priceBox: 5000,
+                priceStrip: 1250,
+                image: "https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=500&q=80",
+                featured: false,
+                desc: "راحة المعدة والتخلص من الحموضة فوراً."
+            }
+        ];
+
+        let cart = [];
+
+        // Incoming Orders List
+        let orders = [
+            {
+                id: 101,
+                type: "prescription",
+                customerName: "حسن من تكريت",
+                customerPhone: "07712345678",
+                notes: "يرجى توصيل العلاج لشارع الأربعين قرب شركة زين",
+                image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&q=80",
+                date: new Date().toLocaleString("ar-IQ"),
+                status: "قيد الانتظار"
+            }
+        ];
+
+        let tempBase64Img = "";
+        let tempPrescriptionImg = "";
+        let currentSlideIndex = 0;
+
+        // Initialize App
+        document.addEventListener("DOMContentLoaded", () => {
+            renderProducts(products);
+            renderSlider();
+            startAutoSlider();
+            renderAdminTable();
+            renderAdminOrders();
+            setupKeyboardShortcut();
+            updateCartUI();
+        });
+
+        // Shortcut Logic (Ctrl + Shift + A / ش)
+        function setupKeyboardShortcut() {
+            document.addEventListener("keydown", (e) => {
+                if (e.ctrlKey && e.shiftKey && (e.key === "A" || e.key === "a" || e.key === "ش")) {
+                    e.preventDefault();
+                    toggleAdminState();
+                }
+            });
+        }
+
+        function toggleAdminState() {
+            const authModal = document.getElementById("adminAuthModal");
+            const panelModal = document.getElementById("adminPanelModal");
+
+            if (authModal.classList.contains("active") || panelModal.classList.contains("active")) {
+                hideAdminCompletely();
+            } else {
+                openModal("adminAuthModal");
+            }
+        }
+
+        function hideAdminCompletely() {
+            closeModal("adminAuthModal");
+            closeModal("adminPanelModal");
+            document.getElementById("adminPassInput").value = "";
+        }
+
+        function formatIQD(amount) {
+            return new Intl.NumberFormat('ar-IQ').format(amount) + " د.ع";
+        }
+
+        // Render Products
+        function renderProducts(items) {
+            const grid = document.getElementById("productsGrid");
+            if (items.length === 0) {
+                grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 2rem;">لا توجد أدوية مطابقة للبحث أو الباركود في صيدلية الهدى.</p>`;
+                return;
+            }
+
+            grid.innerHTML = items.map(p => `
+                <div class="product-card">
+                    <div class="product-img-wrapper" onclick="openLightbox('${p.image}')">
+                        <img src="${p.image}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/150?text=صيدلية+الهدى'">
+                        <span class="zoom-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> تكبير</span>
+                    </div>
+                    <div class="product-info">
+                        <span class="product-category">${p.category}</span>
+                        <h4 class="product-title">${p.name}</h4>
+                        <div class="product-barcode"><i class="fa-solid fa-barcode"></i> ${p.barcode}</div>
+                        
+                        <div class="price-container">
+                            <div class="price-row">
+                                <span class="price-label">الباكيت:</span>
+                                <span class="price-val">${formatIQD(p.priceBox)}</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price-label">الشريط:</span>
+                                <span class="price-val">${formatIQD(p.priceStrip)}</span>
+                            </div>
+                        </div>
+
+                        <div class="buy-actions">
+                            <button class="btn-buy-option" onclick="addToCart(${p.id}, 'box')">
+                                <i class="fa-solid fa-cart-plus"></i> + باكيت
+                            </button>
+                            <button class="btn-buy-option strip" onclick="addToCart(${p.id}, 'strip')">
+                                <i class="fa-solid fa-cart-plus"></i> + شريط
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Search Logic
+        function handleSearch() {
+            const query = document.getElementById("searchInput").value.toLowerCase().trim();
+            const filtered = products.filter(p => 
+                p.name.toLowerCase().includes(query) || 
+                p.category.toLowerCase().includes(query) ||
+                p.barcode.includes(query)
+            );
+            renderProducts(filtered);
+        }
+
+        // Slider Logic
+        function renderSlider() {
+            const featuredItems = products.filter(p => p.featured) || products.slice(0, 3);
+            const container = document.getElementById("heroSlider");
+
+            let slideHTML = "";
+            let dotsHTML = "";
+
+            featuredItems.forEach((p, idx) => {
+                slideHTML += `
+                    <div class="slide ${idx === 0 ? 'active' : ''}" style="background-image: url('${p.image}')">
+                        <div class="slide-overlay"></div>
+                        <div class="slide-content">
+                            <span class="slide-badge">صيدلية الهدى - تكريت</span>
+                            <h2 class="slide-title">${p.name}</h2>
+                            <p class="slide-desc">${p.desc || 'نحن في خدمتكم دائماً صباحاً ومساءً لضمان صحتكم وراحتكم.'}</p>
+                            <div style="font-weight: 800; font-size: 0.9rem;">الباكيت: ${formatIQD(p.priceBox)}</div>
+                        </div>
+                    </div>
+                `;
+                dotsHTML += `<div class="dot ${idx === 0 ? 'active' : ''}" onclick="goToSlide(${idx})"></div>`;
+            });
+
+            container.innerHTML = slideHTML + `<div class="slider-dots" id="sliderDots">${dotsHTML}</div>`;
+        }
+
+        function startAutoSlider() {
+            setInterval(() => {
+                const slides = document.querySelectorAll(".slide");
+                const dots = document.querySelectorAll(".dot");
+                if (!slides.length) return;
+
+                slides[currentSlideIndex].classList.remove("active");
+                if (dots[currentSlideIndex]) dots[currentSlideIndex].classList.remove("active");
+
+                currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+
+                slides[currentSlideIndex].classList.add("active");
+                if (dots[currentSlideIndex]) dots[currentSlideIndex].classList.add("active");
+            }, 4000);
+        }
+
+        function goToSlide(index) {
+            const slides = document.querySelectorAll(".slide");
+            const dots = document.querySelectorAll(".dot");
+            slides[currentSlideIndex].classList.remove("active");
+            dots[currentSlideIndex].classList.remove("active");
+
+            currentSlideIndex = index;
+            slides[currentSlideIndex].classList.add("active");
+            dots[currentSlideIndex].classList.add("active");
+        }
+
+        // Cart Logic
+        function addToCart(productId, unitType) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const unitPrice = unitType === 'box' ? product.priceBox : product.priceStrip;
+            const unitLabel = unitType === 'box' ? 'باكيت' : 'شريط';
+
+            const existingIndex = cart.findIndex(item => item.id === productId && item.unitType === unitType);
+
+            if (existingIndex > -1) {
+                cart[existingIndex].qty += 1;
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    unitType: unitType,
+                    unitLabel: unitLabel,
+                    price: unitPrice,
+                    qty: 1
+                });
+            }
+
+            updateCartUI();
+            alert(`تم إضافة (${unitLabel} - ${product.name}) إلى سلتك في صيدلية الهدى.`);
+        }
+
+        function updateCartUI() {
+            const totalItemsCount = cart.reduce((acc, item) => acc + item.qty, 0);
+            document.getElementById("cartBadge").innerText = totalItemsCount;
+
+            const listEl = document.getElementById("cartItemsList");
+            const summaryEl = document.getElementById("cartSummary");
+
+            if (cart.length === 0) {
+                listEl.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 1.5rem;">سلة المشتريات فارغة حالياً.</p>`;
+                summaryEl.style.display = "none";
+                return;
+            }
+
+            summaryEl.style.display = "block";
+            let grandTotal = 0;
+
+            listEl.innerHTML = cart.map((item, index) => {
+                const subtotal = item.price * item.qty;
+                grandTotal += subtotal;
+
+                return `
+                    <div class="cart-item">
+                        <div class="cart-item-details">
+                            <div class="cart-item-title">${item.name}</div>
+                            <div class="cart-item-type">النوع: ${item.unitLabel} (${formatIQD(item.price)})</div>
+                        </div>
+                        <div class="cart-qty-controls">
+                            <button class="qty-btn" onclick="changeQty(${index}, -1)">-</button>
+                            <span style="font-weight: 800; font-size: 0.85rem;">${item.qty}</span>
+                            <button class="qty-btn" onclick="changeQty(${index}, 1)">+</button>
+                        </div>
+                        <div style="font-weight: 800; color: var(--primary-dark); font-size: 0.85rem;">
+                            ${formatIQD(subtotal)}
+                        </div>
+                        <button class="btn btn-sm btn-delete" onclick="removeCartItem(${index})"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById("cartTotalVal").innerText = formatIQD(grandTotal);
+        }
+
+        function changeQty(index, delta) {
+            cart[index].qty += delta;
+            if (cart[index].qty <= 0) {
+                cart.splice(index, 1);
+            }
+            updateCartUI();
+        }
+
+        function removeCartItem(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function handleCartCheckout(e) {
+            e.preventDefault();
+            if (cart.length === 0) return;
+
+            const name = document.getElementById("checkoutName").value;
+            const phone = document.getElementById("checkoutPhone").value;
+            const address = document.getElementById("checkoutAddress").value;
+            const total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+
+            const newOrder = {
+                id: Date.now(),
+                type: "cart",
+                customerName: name,
+                customerPhone: phone,
+                address: address,
+                items: [...cart],
+                total: total,
+                date: new Date().toLocaleString("ar-IQ"),
+                status: "قيد الانتظار"
+            };
+
+            orders.unshift(newOrder);
+            renderAdminOrders();
+
+            cart = [];
+            updateCartUI();
+            closeModal("cartModal");
+            alert("تم إرسال الطلب بنجاح إلى صيدلية الهدى! سيتم التواصل معكم فوراً لتأكيد التوصيل.");
+        }
+
+        // Prescription Submission
+        function previewImage(input, previewImgId) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    tempPrescriptionImg = e.target.result;
+                    const img = document.getElementById(previewImgId);
+                    img.src = e.target.result;
+                    img.style.display = "block";
+                    document.getElementById("prescriptionText").style.display = "none";
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function handlePrescriptionSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById("prescCustomerName").value;
+            const phone = document.getElementById("prescCustomerPhone").value;
+            const notes = document.getElementById("prescNotes").value;
+
+            if (!tempPrescriptionImg) {
+                alert("يرجى اختيار صورة الوصفة الطبية أولاً.");
+                return;
+            }
+
+            const newPrescriptionOrder = {
+                id: Date.now(),
+                type: "prescription",
+                customerName: name,
+                customerPhone: phone,
+                notes: notes,
+                image: tempPrescriptionImg,
+                date: new Date().toLocaleString("ar-IQ"),
+                status: "قيد الانتظار"
+            };
+
+            orders.unshift(newPrescriptionOrder);
+            renderAdminOrders();
+
+            document.getElementById("prescCustomerName").value = "";
+            document.getElementById("prescCustomerPhone").value = "";
+            document.getElementById("prescNotes").value = "";
+            document.getElementById("prescriptionPreviewImg").style.display = "none";
+            document.getElementById("prescriptionText").style.display = "block";
+            tempPrescriptionImg = "";
+
+            closeModal("prescriptionModal");
+            alert("تم إرسال الروشتة إلى صيدلية الهدى بنجاح! سيتم تجهيز العلاج والتواصل معكم.");
+        }
+
+        // Admin Orders List
+        function renderAdminOrders() {
+            const container = document.getElementById("adminOrdersContainer");
+            document.getElementById("ordersCountBadge").innerText = orders.length;
+
+            if (orders.length === 0) {
+                container.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 1.5rem;">لا توجد طلبات واردة حالياً.</p>`;
+                return;
+            }
+
+            container.innerHTML = orders.map(ord => {
+                let orderBodyHTML = "";
+
+                if (ord.type === "prescription") {
+                    orderBodyHTML = `
+                        <div style="display: flex; gap: 0.8rem; align-items: center; margin-top: 0.4rem; flex-wrap: wrap;">
+                            <img src="${ord.image}" class="prescription-img-thumb" onclick="openLightbox('${ord.image}')" title="اضغط للتكبير">
+                            <div>
+                                <p style="font-weight: 700; color: var(--primary-dark); font-size: 0.85rem;"><i class="fa-solid fa-file-image"></i> صورة الروشتة (اضغط للتكبير)</p>
+                                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">الملاحظات: ${ord.notes || 'لا يوجد'}</p>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    orderBodyHTML = `
+                        <div style="margin-top: 0.4rem;">
+                            <p style="font-size: 0.8rem; color: var(--text-muted);">العنوان: ${ord.address || 'لم يحدد'}</p>
+                            <div style="background: white; padding: 0.5rem; border-radius: 8px; margin-top: 0.4rem;">
+                                ${ord.items.map(i => `<div style="font-size: 0.8rem;">• ${i.name} (${i.unitLabel}) × ${i.qty} = <strong>${formatIQD(i.price * i.qty)}</strong></div>`).join('')}
+                                <div style="font-weight: 800; border-top: 1px dashed #e2e8f0; margin-top: 0.3rem; padding-top: 0.3rem; color: var(--primary-dark); font-size: 0.85rem;">
+                                    المجموع: ${formatIQD(ord.total)}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div>
+                                <span class="order-type-badge ${ord.type === 'prescription' ? 'type-prescription' : 'type-cart'}">
+                                    ${ord.type === 'prescription' ? 'روشتة طبية' : 'طلب شراء سلة'}
+                                </span>
+                                <strong style="margin-right: 0.4rem; font-size: 0.85rem;">${ord.customerName}</strong>
+                                <span style="color: var(--text-muted); font-size: 0.8rem; margin-right: 0.4rem;">
+                                    <i class="fa-solid fa-phone"></i> ${ord.customerPhone}
+                                </span>
+                            </div>
+                            <span style="font-size: 0.72rem; color: var(--text-muted);">${ord.date}</span>
+                        </div>
+
+                        ${orderBodyHTML}
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.6rem; border-top: 1px solid #e2e8f0; padding-top: 0.4rem; flex-wrap: wrap; gap: 0.4rem;">
+                            <div>
+                                <label style="font-size: 0.78rem; font-weight: 700;">الحالة: </label>
+                                <select style="padding: 0.2rem 0.4rem; border-radius: 6px; font-size: 0.78rem;" onchange="updateOrderStatus(${ord.id}, this.value)">
+                                    <option value="قيد الانتظار" ${ord.status === 'قيد الانتظار' ? 'selected' : ''}>قيد الانتظار</option>
+                                    <option value="جاري التجهيز" ${ord.status === 'جاري التجهيز' ? 'selected' : ''}>جاري التجهيز</option>
+                                    <option value="تم التجهيز والتوصيل" ${ord.status === 'تم التجهيز والتوصيل' ? 'selected' : ''}>تم التجهيز والتوصيل</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-sm btn-delete" onclick="deleteOrder(${ord.id})">
+                                <i class="fa-solid fa-trash"></i> حذف
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateOrderStatus(orderId, newStatus) {
+            const ord = orders.find(o => o.id === orderId);
+            if (ord) ord.status = newStatus;
+        }
+
+        function deleteOrder(orderId) {
+            if (confirm("هل أنت متأكد من حذف هذا الطلب من الوارد؟")) {
+                orders = orders.filter(o => o.id !== orderId);
+                renderAdminOrders();
+            }
+        }
+
+        // Admin Products Control
+        function renderAdminTable() {
+            const tbody = document.getElementById("adminProductsTable");
+            tbody.innerHTML = products.map(p => `
+                <tr>
+                    <td><img src="${p.image}" class="admin-thumb" onerror="this.src='https://via.placeholder.com/40'"></td>
+                    <td><strong>${p.name}</strong></td>
+                    <td><code>${p.barcode}</code></td>
+                    <td>${formatIQD(p.priceBox)}</td>
+                    <td>${formatIQD(p.priceStrip)}</td>
+                    <td>
+                        <button class="btn btn-sm btn-edit" onclick="editProduct(${p.id})"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn btn-sm btn-delete" onclick="deleteProduct(${p.id})"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function handleAdminImg(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    tempBase64Img = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function saveProduct(e) {
+            e.preventDefault();
+            const id = document.getElementById("editProductId").value;
+            const name = document.getElementById("prodName").value;
+            const barcode = document.getElementById("prodBarcode").value;
+            const priceBox = parseFloat(document.getElementById("prodPriceBox").value);
+            const priceStrip = parseFloat(document.getElementById("prodPriceStrip").value);
+            const category = document.getElementById("prodCategory").value;
+            const defaultImg = "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&q=80";
+
+            if (id) {
+                const idx = products.findIndex(p => p.id == id);
+                if (idx !== -1) {
+                    products[idx].name = name;
+                    products[idx].barcode = barcode;
+                    products[idx].priceBox = priceBox;
+                    products[idx].priceStrip = priceStrip;
+                    products[idx].category = category;
+                    if (tempBase64Img) products[idx].image = tempBase64Img;
+                }
+            } else {
+                products.push({
+                    id: Date.now(),
+                    name,
+                    barcode,
+                    priceBox,
+                    priceStrip,
+                    category,
+                    image: tempBase64Img || defaultImg,
+                    featured: false
+                });
+            }
+
+            resetAdminForm();
+            renderProducts(products);
+            renderSlider();
+            renderAdminTable();
+        }
+
+        function editProduct(id) {
+            const p = products.find(prod => prod.id === id);
+            if (!p) return;
+
+            document.getElementById("editProductId").value = p.id;
+            document.getElementById("prodName").value = p.name;
+            document.getElementById("prodBarcode").value = p.barcode;
+            document.getElementById("prodPriceBox").value = p.priceBox;
+            document.getElementById("prodPriceStrip").value = p.priceStrip;
+            document.getElementById("prodCategory").value = p.category;
+            document.getElementById("formTitle").innerText = "تعديل بيانات الدواء";
+            tempBase64Img = p.image;
+        }
+
+        function deleteProduct(id) {
+            if (confirm("هل أنت متأكد من حذف هذا الدواء؟")) {
+                products = products.filter(p => p.id !== id);
+                renderProducts(products);
+                renderSlider();
+                renderAdminTable();
+            }
+        }
+
+        function resetAdminForm() {
+            document.getElementById("productForm").reset();
+            document.getElementById("editProductId").value = "";
+            document.getElementById("formTitle").innerText = "إضافة دواء جديد";
+            tempBase64Img = "";
+        }
+
+        // Admin Security Functions
+        function verifyAdminPassword(e) {
+            e.preventDefault();
+            const pass = document.getElementById("adminPassInput").value;
+            if (pass === adminPassword) {
+                closeModal("adminAuthModal");
+                document.getElementById("adminPassInput").value = "";
+                openModal("adminPanelModal");
+            } else {
+                alert("كلمة المرور غير صحيحة!");
+            }
+        }
+
+        function changeAdminPassword(e) {
+            e.preventDefault();
+            const curr = document.getElementById("currentPassInput").value;
+            const newP = document.getElementById("newPassInput").value;
+
+            if (curr !== adminPassword) {
+                alert("كلمة المرور الحالية غير صحيحة!");
+                return;
+            }
+
+            adminPassword = newP;
+            localStorage.setItem("huda_pharmacy_admin_pass", newP);
+            alert("تم تغيير كلمة المرور بنجاح!");
+            document.getElementById("currentPassInput").value = "";
+            document.getElementById("newPassInput").value = "";
+        }
+
+        // Lightbox Zoom Helpers
+        function openLightbox(src) {
+            document.getElementById("lightboxImg").src = src;
+            document.getElementById("lightboxModal").classList.add("active");
+        }
+
+        function closeLightbox() {
+            document.getElementById("lightboxModal").classList.remove("active");
+        }
+
+        // General Modal Helpers
+        function openModal(id) {
+            document.getElementById(id).classList.add("active");
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove("active");
+        }
+
+        function switchTab(tabId, btn) {
+            document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
+            document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
+            document.getElementById(tabId).classList.add("active");
+            btn.classList.add("active");
+        }
+    </script>
+</body>
+</html>
