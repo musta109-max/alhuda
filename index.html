@@ -1182,7 +1182,7 @@
 
     <!-- JavaScript Application Logic & Firebase Integration -->
     <script>
-        // --- 0. إعدادات وتوليد ملف PWA Manifest تلقائياً ---
+        // --- 0. إعدادات وتوليد ملف PWA Manifest تلقائياً مرجوع لأيقونة المشروع الأصلي ---
         (function injectPWAManifest() {
             const manifest = {
                 "name": "صيدلية الهدى",
@@ -1193,7 +1193,7 @@
                 "theme_color": "#0284c7",
                 "icons": [
                     {
-                        "src": "https://cdn-icons-png.flaticon.com/512/3063/3063822.png",
+                        "src": "icon.png",
                         "sizes": "512x512",
                         "type": "image/png"
                     }
@@ -1266,7 +1266,7 @@
             }
         }
 
-        // --- 1. إعدادات Firebase الخاصة بمشروعك (pharmacy-38db6) ---
+        // --- 1. إعدادات Firebase الخاصة بالمشروع (pharmacy-38db6) ---
         const firebaseConfig = {
             apiKey: "AIzaSyCCzWSVdcpawgsa0HvY_JjIW0i8Mej7cUg",
             authDomain: "pharmacy-38db6.firebaseapp.com",
