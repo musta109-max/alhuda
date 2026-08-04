@@ -58,6 +58,95 @@
             height: auto;
         }
 
+        /* --- Mandatory Install Overlay --- */
+        .install-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: #0d1527;
+            z-index: 999999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+            color: white;
+        }
+
+        .install-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 380px;
+            width: 100%;
+        }
+
+        .install-logo-box {
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, #0284c7 0%, #0369a1 100%);
+            border-radius: 22px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px rgba(2, 132, 199, 0.6);
+            border: 2px solid rgba(56, 189, 248, 0.5);
+            margin-bottom: 2rem;
+            padding: 0.8rem;
+        }
+
+        .install-logo-box i {
+            font-size: 2.8rem;
+            color: #38bdf8;
+            margin-bottom: 0.3rem;
+            filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.8));
+        }
+
+        .install-logo-box span {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        .install-title {
+            color: #10b981;
+            font-size: 1.7rem;
+            font-weight: 800;
+            margin-bottom: 0.8rem;
+        }
+
+        .install-desc {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .btn-install-app {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 0.85rem 2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.4);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-install-app:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -5px rgba(16, 185, 129, 0.6);
+        }
+
         /* --- Header --- */
         header {
             background: linear-gradient(135deg, var(--primary-dark), var(--primary));
@@ -773,6 +862,25 @@
 </head>
 <body>
 
+    <!-- شاشة التثبيت الأجباري (Mandatory Install Overlay) -->
+    <div id="mandatoryInstallOverlay" class="install-overlay" style="display: flex;">
+        <div class="install-card">
+            <div class="install-logo-box">
+                <i class="fa-solid fa-capsules"></i>
+                <span>صيدلية الهدى</span>
+            </div>
+            
+            <h2 class="install-title" id="installStatusTitle">تم التثبيت بنجاح!</h2>
+            <p class="install-desc" id="installStatusDesc">
+                يرجى الخروج وفتح التطبيق من الشاشة الرئيسية لجهازك للاستخدام المباشر.
+            </p>
+
+            <button id="pwaInstallBtn" class="btn-install-app" style="display: none;" onclick="triggerPwaInstall()">
+                <i class="fa-solid fa-download"></i> تثبيت التطبيق الآن
+            </button>
+        </div>
+    </div>
+
     <!-- Header Navigation -->
     <header>
         <div class="nav-container">
@@ -1074,6 +1182,90 @@
 
     <!-- JavaScript Application Logic & Firebase Integration -->
     <script>
+        // --- 0. إعدادات وتوليد ملف PWA Manifest تلقائياً ---
+        (function injectPWAManifest() {
+            const manifest = {
+                "name": "صيدلية الهدى",
+                "short_name": "صيدلية الهدى",
+                "start_url": "./",
+                "display": "standalone",
+                "background_color": "#0d1527",
+                "theme_color": "#0284c7",
+                "icons": [
+                    {
+                        "src": "https://cdn-icons-png.flaticon.com/512/3063/3063822.png",
+                        "sizes": "512x512",
+                        "type": "image/png"
+                    }
+                ]
+            };
+            const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+            const link = document.createElement('link');
+            link.rel = 'manifest';
+            link.href = URL.createObjectURL(blob);
+            document.head.appendChild(link);
+        })();
+
+        // --- إدارة منطق التثبيت الأجباري PWA ---
+        let deferredPrompt = null;
+
+        function checkStandaloneMode() {
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone || document.referrer.includes('android-app://');
+            const overlay = document.getElementById("mandatoryInstallOverlay");
+            
+            if (isStandalone) {
+                if (overlay) overlay.style.display = "none";
+            } else {
+                if (overlay) overlay.style.display = "flex";
+            }
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const installBtn = document.getElementById("pwaInstallBtn");
+            const statusTitle = document.getElementById("installStatusTitle");
+            const statusDesc = document.getElementById("installStatusDesc");
+            
+            if (installBtn) installBtn.style.display = "inline-flex";
+            if (statusTitle) {
+                statusTitle.innerText = "تثبيت تطبيق صيدلية الهدى";
+                statusTitle.style.color = "#38bdf8";
+            }
+            if (statusDesc) statusDesc.innerText = "اضغط على الزر أدناه لتثبيت التطبيق مباشرة على جهازك لسهولة الاستخدام.";
+        });
+
+        function triggerPwaInstall() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        showInstalledSuccessView();
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        }
+
+        window.addEventListener('appinstalled', () => {
+            showInstalledSuccessView();
+        });
+
+        function showInstalledSuccessView() {
+            const installBtn = document.getElementById("pwaInstallBtn");
+            const statusTitle = document.getElementById("installStatusTitle");
+            const statusDesc = document.getElementById("installStatusDesc");
+            
+            if (installBtn) installBtn.style.display = "none";
+            if (statusTitle) {
+                statusTitle.innerText = "تم التثبيت بنجاح!";
+                statusTitle.style.color = "#10b981";
+            }
+            if (statusDesc) {
+                statusDesc.innerText = "يرجى الخروج وفتح التطبيق من الشاشة الرئيسية لجهازك للاستخدام المباشر.";
+            }
+        }
+
         // --- 1. إعدادات Firebase الخاصة بمشروعك (pharmacy-38db6) ---
         const firebaseConfig = {
             apiKey: "AIzaSyCCzWSVdcpawgsa0HvY_JjIW0i8Mej7cUg",
@@ -1125,6 +1317,7 @@
         let currentSlideIndex = 0;
 
         document.addEventListener("DOMContentLoaded", () => {
+            checkStandaloneMode();
             setupKeyboardShortcut();
             listenToFirebaseProducts();
             listenToFirebaseOrders();
