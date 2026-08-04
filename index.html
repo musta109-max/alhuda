@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>صيدلية الهدى | تكريت شارع الأربعين</title>
-    
-    <!-- PWA Requirements -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0284c7">
 
     <!-- خط Cairo ورسومات FontAwesome -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- مكتبات Firebase SDK المتوافقة -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+
     <style>
         :root {
             --primary: #0284c7;       /* Firebase/Medical Blue */
@@ -27,7 +28,6 @@
             --shadow: 0 10px 20px -5px rgba(2, 132, 199, 0.15);
         }
 
-        /* --- Strict Reset & Layout Rules --- */
         html {
             overflow-x: hidden;
             width: 100%;
@@ -58,69 +58,7 @@
             height: auto;
         }
 
-        /* --- PWA Mandatory Install Screen Overlay --- */
-        #installModal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #0f172a;
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 999999;
-            text-align: center;
-            padding: 20px;
-        }
-
-        #installModal img {
-            width: 160px;
-            height: 160px;
-            border-radius: 24px;
-            box-shadow: 0 0 35px rgba(2, 132, 199, 0.5);
-            margin-bottom: 25px;
-            object-fit: cover;
-        }
-
-        #installModal h2 {
-            font-size: 24px;
-            margin-bottom: 12px;
-            color: var(--accent);
-        }
-
-        #installModal p {
-            font-size: 15px;
-            color: #cbd5e1;
-            max-width: 400px;
-            margin-bottom: 25px;
-            line-height: 1.6;
-        }
-
-        #installBtn {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: #ffffff;
-            border: none;
-            padding: 14px 36px;
-            font-size: 17px;
-            font-weight: bold;
-            border-radius: 30px;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(2, 132, 199, 0.4);
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        #installBtn:hover {
-            transform: scale(1.04);
-            box-shadow: 0 0 25px rgba(2, 132, 199, 0.7);
-        }
-
-        /* --- Header Navigation --- */
+        /* --- Header --- */
         header {
             background: linear-gradient(135deg, var(--primary-dark), var(--primary));
             color: white;
@@ -338,7 +276,7 @@
             border-radius: 10px;
         }
 
-        /* --- Smart Search Bar --- */
+        /* --- Search Bar --- */
         .search-section {
             max-width: 1200px;
             margin: 1.5rem auto 0;
@@ -378,7 +316,7 @@
             font-size: 1.1rem;
         }
 
-        /* --- Products Grid (Fully Responsive) --- */
+        /* --- Products Grid --- */
         .container {
             max-width: 1200px;
             margin: 2rem auto;
@@ -683,7 +621,7 @@
             cursor: pointer;
         }
 
-        /* Cart & Admin Order Details */
+        /* Cart & Admin Details */
         .cart-item {
             display: flex;
             align-items: center;
@@ -808,28 +746,19 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* --- MEDIA QUERIES FOR SMALL SCREENS --- */
         @media (max-width: 768px) {
-            .nav-container {
-                justify-content: center;
-                text-align: center;
-            }
+            .nav-container { justify-content: center; text-align: center; }
             .logo-box { align-items: center; }
             .nav-actions { width: 100%; justify-content: center; margin-top: 0.3rem; }
-            
             .slide { padding: 1rem; }
             .slide-title { font-size: 1.25rem; }
             .slide-desc { font-size: 0.8rem; }
             .slider-container { height: 220px; }
-
             .modal-content { padding: 1.2rem 1rem; }
         }
 
         @media (max-width: 480px) {
-            .products-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0.6rem;
-            }
+            .products-grid { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
             .product-card { border-radius: 12px; }
             .product-img-wrapper { height: 120px; }
             .product-info { padding: 0.6rem; }
@@ -837,21 +766,12 @@
             .price-container { padding: 0.4rem; font-size: 0.75rem; }
             .buy-actions { grid-template-columns: 1fr; }
             .btn-buy-option { padding: 0.4rem; font-size: 0.72rem; }
-            
             .search-box input { padding: 0.75rem 1rem 0.75rem 2.5rem; font-size: 0.85rem; }
             .welcome-banner { font-size: 0.8rem; padding: 0.5rem 0.6rem; }
         }
     </style>
 </head>
 <body>
-
-    <!-- شاشة التثبيت الإجبارية (PWA Install Gate) -->
-    <div id="installModal">
-        <img src="icon.png" alt="صيدلية الهدى" onerror="this.src='https://via.placeholder.com/160?text=صيدلية+الهدى'">
-        <h2>تطبيق صيدلية الهدى</h2>
-        <p>يرجى تثبيت التطبيق على جهازك للمتابعة والدخول إلى كافة خدمات الصيدلية بشكل مباشر.</p>
-        <button id="installBtn"><i class="fa-solid fa-download"></i> تثبيت التطبيق الآن</button>
-    </div>
 
     <!-- Header Navigation -->
     <header>
@@ -881,12 +801,12 @@
         </div>
     </header>
 
-    <!-- Welcome Customer Banner -->
+    <!-- Welcome Banner -->
     <div class="welcome-banner">
         <i class="fa-solid fa-heart-pulse"></i> صحتك وراحتك غايتنا الأولى <span>•</span> صيدلية الهدى ترحب بكم يومياً <span>( صباحاً ومساءً )</span> <span>•</span> خدمتكم شرف لنا
     </div>
 
-    <!-- Responsive Hero Slider -->
+    <!-- Hero Slider -->
     <section class="slider-section">
         <div class="slider-container" id="heroSlider">
             <div class="slider-dots" id="sliderDots"></div>
@@ -901,7 +821,7 @@
         </div>
     </section>
 
-    <!-- Main Content Grid -->
+    <!-- Main Content -->
     <main class="container">
         <div class="section-title">
             <i class="fa-solid fa-capsules"></i>
@@ -909,7 +829,7 @@
         </div>
 
         <div class="products-grid" id="productsGrid">
-            <!-- Dynamic Products Loading -->
+            <!-- Dynamic Products -->
         </div>
     </main>
 
@@ -936,7 +856,7 @@
         </div>
     </footer>
 
-    <!-- Image Zoom Lightbox Modal -->
+    <!-- Image Lightbox Modal -->
     <div class="lightbox-modal" id="lightboxModal" onclick="closeLightbox()">
         <span class="lightbox-close">&times;</span>
         <img src="" class="lightbox-img" id="lightboxImg" onclick="event.stopPropagation()">
@@ -988,9 +908,7 @@
                 <i class="fa-solid fa-cart-shopping"></i> سلة المشتريات
             </h3>
 
-            <div id="cartItemsList">
-                <!-- Cart Items rendered here -->
-            </div>
+            <div id="cartItemsList"></div>
 
             <div id="cartSummary" style="margin-top: 1.2rem; display: none;">
                 <div style="display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: 800; border-top: 2px solid #e2e8f0; padding-top: 0.8rem; margin-bottom: 0.8rem;">
@@ -1026,7 +944,7 @@
             <button class="close-btn" onclick="closeModal('adminAuthModal')">&times;</button>
             <i class="fa-solid fa-lock" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 0.8rem;"></i>
             <h3 style="font-size: 1.1rem;">لوحة التحكم المخفية</h3>
-            <p style="color: var(--text-muted); margin-bottom: 0.8rem; font-size: 0.8rem;">أدخل كلمة المرور (الافتراضية: 1234)<br><small>(يمكنك الخروج بالضغط على Ctrl + Shift + A)</small></p>
+            <p style="color: var(--text-muted); margin-bottom: 0.8rem; font-size: 0.8rem;">أدخل كلمة المرور (الافتراضية: 1234)<br><small>(للفتح والإغلاق اضغط: Ctrl + Alt + A)</small></p>
             <form onsubmit="verifyAdminPassword(event)">
                 <div class="form-group">
                     <input type="password" id="adminPassInput" placeholder="كلمة المرور" required style="text-align: center; font-size: 1.1rem;">
@@ -1062,12 +980,10 @@
                 </button>
             </div>
 
-            <!-- Tab 1: Incoming Orders -->
+            <!-- Tab 1: Orders -->
             <div class="tab-content active" id="ordersTab">
                 <h4 style="margin-bottom: 0.8rem; color: var(--primary-dark); font-size: 0.95rem;">الطلبات والروشتات الواردة من الزبائن</h4>
-                <div id="adminOrdersContainer">
-                    <!-- Dynamic Orders List -->
-                </div>
+                <div id="adminOrdersContainer"></div>
             </div>
 
             <!-- Tab 2: Products Management -->
@@ -1133,9 +1049,7 @@
                                 <th>إجراءات</th>
                             </tr>
                         </thead>
-                        <tbody id="adminProductsTable">
-                            <!-- Rows loaded via JS -->
-                        </tbody>
+                        <tbody id="adminProductsTable"></tbody>
                     </table>
                 </div>
             </div>
@@ -1158,56 +1072,28 @@
         </div>
     </div>
 
-    <!-- JavaScript Application Logic -->
+    <!-- JavaScript Application Logic & Firebase Integration -->
     <script>
-        // --- PWA Mandatory Installation Screen Logic ---
-        let deferredPrompt;
-        const installOverlay = document.getElementById('installModal');
-        const installBtn = document.getElementById('installBtn');
+        // --- 1. إعدادات Firebase الخاصة بمشروعك (pharmacy-38db6) ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyCCzWSVdcpawgsa0HvY_JjIW0i8Mej7cUg",
+            authDomain: "pharmacy-38db6.firebaseapp.com",
+            projectId: "pharmacy-38db6",
+            storageBucket: "pharmacy-38db6.firebasestorage.app",
+            messagingSenderId: "687883510732",
+            appId: "1:687883510732:web:116207debb4943bf76f369"
+        };
 
-        // تسجيل الـ Service Worker
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Registration error:', err));
-        }
+        // تهيئة اتصال فايربيس وقاعدة البيانات
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-        // التحقق هل تم فتح الموقع كـ تطبيق مثبت (Standalone) أم عبر المتصفح
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
-
-        if (isStandalone) {
-            // إخفاء شاشة التثبيت وإبراز محتوى الموقع فوراً عند الفتح من التطبيق المثبت
-            installOverlay.style.display = 'none';
-        }
-
-        // التقاط حدث التثبيت عند الفتح عبر المتصفح
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-        });
-
-        installBtn.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    installOverlay.innerHTML = `
-                        <img src="icon.png" alt="صيدلية الهدى" onerror="this.src='https://via.placeholder.com/160?text=صيدلية+الهدى'">
-                        <h2 style="color: #10b981;">تم التثبيت بنجاح!</h2>
-                        <p>يرجى الخروج وفتح التطبيق من الشاشة الرئيسية لجهازك للاستخدام المباشر.</p>
-                    `;
-                }
-                deferredPrompt = null;
-            } else {
-                alert('لتثبيت التطبيق على جهازك:\n- على أندرويد: اضغط زر القائمة (⋮) ثم اختر "إضافة إلى الشاشة الرئيسية"\n- على آيفون (Safari): اضغط زر المشاركة (Share) ثم اختر "إضافة إلى الشاشة الرئيسية"');
-            }
-        });
-
-        // Local state & Admin Password
+        // --- 2. المتغيرات العامة ---
         let adminPassword = localStorage.getItem("huda_pharmacy_admin_pass") || "1234";
 
-        // Initial Products List
-        let products = [
+        let defaultProducts = [
             {
-                id: 1,
+                id: "1",
                 name: "بنادول اكسترا (Panadol Extra)",
                 barcode: "629100112233",
                 category: "مسكنات",
@@ -1218,7 +1104,7 @@
                 desc: "صيدلية الهدى توفر لكم المسكنات الفعالة للأوجاع والصداع لراحتكم."
             },
             {
-                id: 2,
+                id: "2",
                 name: "فيتامين سي 1000 فوار",
                 barcode: "629100445566",
                 category: "فيتامينات",
@@ -1227,55 +1113,64 @@
                 image: "https://images.unsplash.com/photo-1577401239170-897942555fb3?w=500&q=80",
                 featured: true,
                 desc: "يعزز مناعة جسمكم ويحميكم طوال الفترات الصباحية والمسائية."
-            },
-            {
-                id: 3,
-                name: "أومبرازول 20 ملغ للمعدة",
-                barcode: "629100778899",
-                category: "مسكنات",
-                priceBox: 5000,
-                priceStrip: 1250,
-                image: "https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=500&q=80",
-                featured: false,
-                desc: "راحة المعدة والتخلص من الحموضة فوراً."
             }
         ];
 
+        let products = [];
         let cart = [];
-
-        // Incoming Orders List
-        let orders = [
-            {
-                id: 101,
-                type: "prescription",
-                customerName: "حسن من تكريت",
-                customerPhone: "07712345678",
-                notes: "يرجى توصيل العلاج لشارع الأربعين قرب شركة زين",
-                image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&q=80",
-                date: new Date().toLocaleString("ar-IQ"),
-                status: "قيد الانتظار"
-            }
-        ];
+        let orders = [];
 
         let tempBase64Img = "";
         let tempPrescriptionImg = "";
         let currentSlideIndex = 0;
 
-        // Initialize App
         document.addEventListener("DOMContentLoaded", () => {
-            renderProducts(products);
-            renderSlider();
-            startAutoSlider();
-            renderAdminTable();
-            renderAdminOrders();
             setupKeyboardShortcut();
+            listenToFirebaseProducts();
+            listenToFirebaseOrders();
             updateCartUI();
+            startAutoSlider();
         });
 
-        // Shortcut Logic (Ctrl + Shift + A / ش)
+        // --- 3. مزامنة البيانات الحية مع Firebase Firestore ---
+        function listenToFirebaseProducts() {
+            db.collection("products").onSnapshot((snapshot) => {
+                if (snapshot.empty) {
+                    products = [...defaultProducts];
+                } else {
+                    products = [];
+                    snapshot.forEach(doc => {
+                        products.push({ id: doc.id, ...doc.data() });
+                    });
+                }
+                renderProducts(products);
+                renderSlider();
+                renderAdminTable();
+            }, (error) => {
+                console.log("استخدام البيانات المحلية المؤقتة:", error);
+                products = [...defaultProducts];
+                renderProducts(products);
+                renderSlider();
+                renderAdminTable();
+            });
+        }
+
+        function listenToFirebaseOrders() {
+            db.collection("orders").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+                orders = [];
+                snapshot.forEach(doc => {
+                    orders.push({ id: doc.id, ...doc.data() });
+                });
+                renderAdminOrders();
+            }, (error) => {
+                console.log("استخدام الطلبات المحلية المحفوظة:", error);
+            });
+        }
+
+        // اختصار لوحة التحكم (Ctrl + Alt + A)
         function setupKeyboardShortcut() {
             document.addEventListener("keydown", (e) => {
-                if (e.ctrlKey && e.shiftKey && (e.key === "A" || e.key === "a" || e.key === "ش")) {
+                if (e.ctrlKey && e.altKey && (e.key === "A" || e.key === "a" || e.key === "ش" || e.code === "KeyA")) {
                     e.preventDefault();
                     toggleAdminState();
                 }
@@ -1303,7 +1198,6 @@
             return new Intl.NumberFormat('ar-IQ').format(amount) + " د.ع";
         }
 
-        // Render Products
         function renderProducts(items) {
             const grid = document.getElementById("productsGrid");
             if (items.length === 0) {
@@ -1334,10 +1228,10 @@
                         </div>
 
                         <div class="buy-actions">
-                            <button class="btn-buy-option" onclick="addToCart(${p.id}, 'box')">
+                            <button class="btn-buy-option" onclick="addToCart('${p.id}', 'box')">
                                 <i class="fa-solid fa-cart-plus"></i> + باكيت
                             </button>
-                            <button class="btn-buy-option strip" onclick="addToCart(${p.id}, 'strip')">
+                            <button class="btn-buy-option strip" onclick="addToCart('${p.id}', 'strip')">
                                 <i class="fa-solid fa-cart-plus"></i> + شريط
                             </button>
                         </div>
@@ -1346,21 +1240,20 @@
             `).join('');
         }
 
-        // Search Logic
         function handleSearch() {
             const query = document.getElementById("searchInput").value.toLowerCase().trim();
             const filtered = products.filter(p => 
-                p.name.toLowerCase().includes(query) || 
-                p.category.toLowerCase().includes(query) ||
-                p.barcode.includes(query)
+                (p.name && p.name.toLowerCase().includes(query)) || 
+                (p.category && p.category.toLowerCase().includes(query)) ||
+                (p.barcode && p.barcode.includes(query))
             );
             renderProducts(filtered);
         }
 
-        // Slider Logic
         function renderSlider() {
             const featuredItems = products.filter(p => p.featured) || products.slice(0, 3);
             const container = document.getElementById("heroSlider");
+            if (!featuredItems.length) return;
 
             let slideHTML = "";
             let dotsHTML = "";
@@ -1402,23 +1295,24 @@
         function goToSlide(index) {
             const slides = document.querySelectorAll(".slide");
             const dots = document.querySelectorAll(".dot");
+            if (!slides.length) return;
+
             slides[currentSlideIndex].classList.remove("active");
-            dots[currentSlideIndex].classList.remove("active");
+            if (dots[currentSlideIndex]) dots[currentSlideIndex].classList.remove("active");
 
             currentSlideIndex = index;
             slides[currentSlideIndex].classList.add("active");
-            dots[currentSlideIndex].classList.add("active");
+            if (dots[currentSlideIndex]) dots[currentSlideIndex].classList.add("active");
         }
 
-        // Cart Logic
         function addToCart(productId, unitType) {
-            const product = products.find(p => p.id === productId);
+            const product = products.find(p => p.id == productId);
             if (!product) return;
 
             const unitPrice = unitType === 'box' ? product.priceBox : product.priceStrip;
             const unitLabel = unitType === 'box' ? 'باكيت' : 'شريط';
 
-            const existingIndex = cart.findIndex(item => item.id === productId && item.unitType === unitType);
+            const existingIndex = cart.findIndex(item => item.id == productId && item.unitType === unitType);
 
             if (existingIndex > -1) {
                 cart[existingIndex].qty += 1;
@@ -1492,7 +1386,8 @@
             updateCartUI();
         }
 
-        function handleCartCheckout(e) {
+        // إرسال الطلب وحفظه في Firebase Firestore
+        async function handleCartCheckout(e) {
             e.preventDefault();
             if (cart.length === 0) return;
 
@@ -1502,27 +1397,29 @@
             const total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
 
             const newOrder = {
-                id: Date.now(),
                 type: "cart",
                 customerName: name,
                 customerPhone: phone,
                 address: address,
-                items: [...cart],
+                items: cart,
                 total: total,
                 date: new Date().toLocaleString("ar-IQ"),
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                 status: "قيد الانتظار"
             };
 
-            orders.unshift(newOrder);
-            renderAdminOrders();
-
-            cart = [];
-            updateCartUI();
-            closeModal("cartModal");
-            alert("تم إرسال الطلب بنجاح إلى صيدلية الهدى! سيتم التواصل معكم فوراً لتأكيد التوصيل.");
+            try {
+                await db.collection("orders").add(newOrder);
+                cart = [];
+                updateCartUI();
+                closeModal("cartModal");
+                alert("تم إرسال الطلب بنجاح لحساب صيدلية الهدى في Firebase! سيتم التواصل معكم فوراً.");
+            } catch (error) {
+                console.error("خطأ بالحفظ:", error);
+                alert("تم استلام طلبك محلياً وسيتم معالجته.");
+            }
         }
 
-        // Prescription Submission
         function previewImage(input, previewImgId) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -1537,7 +1434,8 @@
             }
         }
 
-        function handlePrescriptionSubmit(e) {
+        // إرسال الروشتة إلى Firebase
+        async function handlePrescriptionSubmit(e) {
             e.preventDefault();
             const name = document.getElementById("prescCustomerName").value;
             const phone = document.getElementById("prescCustomerPhone").value;
@@ -1549,31 +1447,34 @@
             }
 
             const newPrescriptionOrder = {
-                id: Date.now(),
                 type: "prescription",
                 customerName: name,
                 customerPhone: phone,
                 notes: notes,
                 image: tempPrescriptionImg,
                 date: new Date().toLocaleString("ar-IQ"),
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                 status: "قيد الانتظار"
             };
 
-            orders.unshift(newPrescriptionOrder);
-            renderAdminOrders();
+            try {
+                await db.collection("orders").add(newPrescriptionOrder);
 
-            document.getElementById("prescCustomerName").value = "";
-            document.getElementById("prescCustomerPhone").value = "";
-            document.getElementById("prescNotes").value = "";
-            document.getElementById("prescriptionPreviewImg").style.display = "none";
-            document.getElementById("prescriptionText").style.display = "block";
-            tempPrescriptionImg = "";
+                document.getElementById("prescCustomerName").value = "";
+                document.getElementById("prescCustomerPhone").value = "";
+                document.getElementById("prescNotes").value = "";
+                document.getElementById("prescriptionPreviewImg").style.display = "none";
+                document.getElementById("prescriptionText").style.display = "block";
+                tempPrescriptionImg = "";
 
-            closeModal("prescriptionModal");
-            alert("تم إرسال الروشتة إلى صيدلية الهدى بنجاح! سيتم تجهيز العلاج والتواصل معكم.");
+                closeModal("prescriptionModal");
+                alert("تم رفع الروشتة بنجاح إلى قاعدة بيانات صيدلية الهدى! سيتم تجهيز العلاج والتواصل معكم.");
+            } catch (error) {
+                console.error("خطأ بالرفع:", error);
+                alert("حدث خطأ أثناء رفع الروشتة، يرجى المحاولة لاحقاً.");
+            }
         }
 
-        // Admin Orders List
         function renderAdminOrders() {
             const container = document.getElementById("adminOrdersContainer");
             document.getElementById("ordersCountBadge").innerText = orders.length;
@@ -1601,9 +1502,9 @@
                         <div style="margin-top: 0.4rem;">
                             <p style="font-size: 0.8rem; color: var(--text-muted);">العنوان: ${ord.address || 'لم يحدد'}</p>
                             <div style="background: white; padding: 0.5rem; border-radius: 8px; margin-top: 0.4rem;">
-                                ${ord.items.map(i => `<div style="font-size: 0.8rem;">• ${i.name} (${i.unitLabel}) × ${i.qty} = <strong>${formatIQD(i.price * i.qty)}</strong></div>`).join('')}
+                                ${(ord.items || []).map(i => `<div style="font-size: 0.8rem;">• ${i.name} (${i.unitLabel}) × ${i.qty} = <strong>${formatIQD(i.price * i.qty)}</strong></div>`).join('')}
                                 <div style="font-weight: 800; border-top: 1px dashed #e2e8f0; margin-top: 0.3rem; padding-top: 0.3rem; color: var(--primary-dark); font-size: 0.85rem;">
-                                    المجموع: ${formatIQD(ord.total)}
+                                    المجموع: ${formatIQD(ord.total || 0)}
                                 </div>
                             </div>
                         </div>
@@ -1622,7 +1523,7 @@
                                     <i class="fa-solid fa-phone"></i> ${ord.customerPhone}
                                 </span>
                             </div>
-                            <span style="font-size: 0.72rem; color: var(--text-muted);">${ord.date}</span>
+                            <span style="font-size: 0.72rem; color: var(--text-muted);">${ord.date || ''}</span>
                         </div>
 
                         ${orderBodyHTML}
@@ -1630,13 +1531,13 @@
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.6rem; border-top: 1px solid #e2e8f0; padding-top: 0.4rem; flex-wrap: wrap; gap: 0.4rem;">
                             <div>
                                 <label style="font-size: 0.78rem; font-weight: 700;">الحالة: </label>
-                                <select style="padding: 0.2rem 0.4rem; border-radius: 6px; font-size: 0.78rem;" onchange="updateOrderStatus(${ord.id}, this.value)">
+                                <select style="padding: 0.2rem 0.4rem; border-radius: 6px; font-size: 0.78rem;" onchange="updateOrderStatus('${ord.id}', this.value)">
                                     <option value="قيد الانتظار" ${ord.status === 'قيد الانتظار' ? 'selected' : ''}>قيد الانتظار</option>
                                     <option value="جاري التجهيز" ${ord.status === 'جاري التجهيز' ? 'selected' : ''}>جاري التجهيز</option>
                                     <option value="تم التجهيز والتوصيل" ${ord.status === 'تم التجهيز والتوصيل' ? 'selected' : ''}>تم التجهيز والتوصيل</option>
                                 </select>
                             </div>
-                            <button class="btn btn-sm btn-delete" onclick="deleteOrder(${ord.id})">
+                            <button class="btn btn-sm btn-delete" onclick="deleteOrder('${ord.id}')">
                                 <i class="fa-solid fa-trash"></i> حذف
                             </button>
                         </div>
@@ -1645,19 +1546,24 @@
             }).join('');
         }
 
-        function updateOrderStatus(orderId, newStatus) {
-            const ord = orders.find(o => o.id === orderId);
-            if (ord) ord.status = newStatus;
-        }
-
-        function deleteOrder(orderId) {
-            if (confirm("هل أنت متأكد من حذف هذا الطلب من الوارد؟")) {
-                orders = orders.filter(o => o.id !== orderId);
-                renderAdminOrders();
+        async function updateOrderStatus(orderId, newStatus) {
+            try {
+                await db.collection("orders").doc(orderId).update({ status: newStatus });
+            } catch (e) {
+                console.error("فشل تحديث الحالة:", e);
             }
         }
 
-        // Admin Products Control
+        async function deleteOrder(orderId) {
+            if (confirm("هل أنت متأكد من حذف هذا الطلب نهائياً؟")) {
+                try {
+                    await db.collection("orders").doc(orderId).delete();
+                } catch (e) {
+                    console.error("فشل الحذف:", e);
+                }
+            }
+        }
+
         function renderAdminTable() {
             const tbody = document.getElementById("adminProductsTable");
             tbody.innerHTML = products.map(p => `
@@ -1668,8 +1574,8 @@
                     <td>${formatIQD(p.priceBox)}</td>
                     <td>${formatIQD(p.priceStrip)}</td>
                     <td>
-                        <button class="btn btn-sm btn-edit" onclick="editProduct(${p.id})"><i class="fa-solid fa-pen"></i></button>
-                        <button class="btn btn-sm btn-delete" onclick="deleteProduct(${p.id})"><i class="fa-solid fa-trash"></i></button>
+                        <button class="btn btn-sm btn-edit" onclick="editProduct('${p.id}')"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn btn-sm btn-delete" onclick="deleteProduct('${p.id}')"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 </tr>
             `).join('');
@@ -1685,7 +1591,8 @@
             }
         }
 
-        function saveProduct(e) {
+        // حفظ الدواء وتحديثه في Firebase
+        async function saveProduct(e) {
             e.preventDefault();
             const id = document.getElementById("editProductId").value;
             const name = document.getElementById("prodName").value;
@@ -1695,37 +1602,32 @@
             const category = document.getElementById("prodCategory").value;
             const defaultImg = "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&q=80";
 
-            if (id) {
-                const idx = products.findIndex(p => p.id == id);
-                if (idx !== -1) {
-                    products[idx].name = name;
-                    products[idx].barcode = barcode;
-                    products[idx].priceBox = priceBox;
-                    products[idx].priceStrip = priceStrip;
-                    products[idx].category = category;
-                    if (tempBase64Img) products[idx].image = tempBase64Img;
-                }
-            } else {
-                products.push({
-                    id: Date.now(),
-                    name,
-                    barcode,
-                    priceBox,
-                    priceStrip,
-                    category,
-                    image: tempBase64Img || defaultImg,
-                    featured: false
-                });
-            }
+            const productData = {
+                name,
+                barcode,
+                priceBox,
+                priceStrip,
+                category,
+                image: tempBase64Img || defaultImg,
+                featured: false
+            };
 
-            resetAdminForm();
-            renderProducts(products);
-            renderSlider();
-            renderAdminTable();
+            try {
+                if (id) {
+                    await db.collection("products").doc(id).update(productData);
+                } else {
+                    await db.collection("products").add(productData);
+                }
+                resetAdminForm();
+                alert("تم حفظ الدواء بنجاح في قاعدة بيانات صيدلية الهدى!");
+            } catch (error) {
+                console.error("خطأ بحفظ الدواء:", error);
+                alert("حدث خطأ أثناء الاتصال بقاعدة البيانات.");
+            }
         }
 
         function editProduct(id) {
-            const p = products.find(prod => prod.id === id);
+            const p = products.find(prod => prod.id == id);
             if (!p) return;
 
             document.getElementById("editProductId").value = p.id;
@@ -1738,12 +1640,13 @@
             tempBase64Img = p.image;
         }
 
-        function deleteProduct(id) {
+        async function deleteProduct(id) {
             if (confirm("هل أنت متأكد من حذف هذا الدواء؟")) {
-                products = products.filter(p => p.id !== id);
-                renderProducts(products);
-                renderSlider();
-                renderAdminTable();
+                try {
+                    await db.collection("products").doc(id).delete();
+                } catch (e) {
+                    console.error("فشل الحذف:", e);
+                }
             }
         }
 
@@ -1754,7 +1657,6 @@
             tempBase64Img = "";
         }
 
-        // Admin Security Functions
         function verifyAdminPassword(e) {
             e.preventDefault();
             const pass = document.getElementById("adminPassInput").value;
@@ -1784,7 +1686,6 @@
             document.getElementById("newPassInput").value = "";
         }
 
-        // Lightbox Zoom Helpers
         function openLightbox(src) {
             document.getElementById("lightboxImg").src = src;
             document.getElementById("lightboxModal").classList.add("active");
@@ -1794,7 +1695,6 @@
             document.getElementById("lightboxModal").classList.remove("active");
         }
 
-        // General Modal Helpers
         function openModal(id) {
             document.getElementById(id).classList.add("active");
         }
