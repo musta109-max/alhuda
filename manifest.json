@@ -1,7 +1,7 @@
 {
   "name": "صيدلية الهدى",
   "short_name": "الهدى",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#030c1d",
   "theme_color": "#030c1d",
