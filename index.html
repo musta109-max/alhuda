@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>صيدلية الهدى | تكريت شارع الأربعين</title>
+    
+    <!-- PWA Requirements -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0284c7">
+
     <!-- خط Cairo ورسومات FontAwesome -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -34,7 +39,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Cairo', sans-serif;
-            max-width: 100%; /* Prevents any element from exceeding its parent */
+            max-width: 100%;
         }
 
         body {
@@ -51,6 +56,68 @@
         img, iframe {
             max-width: 100%;
             height: auto;
+        }
+
+        /* --- PWA Mandatory Install Screen Overlay --- */
+        #installModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #0f172a;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 999999;
+            text-align: center;
+            padding: 20px;
+        }
+
+        #installModal img {
+            width: 160px;
+            height: 160px;
+            border-radius: 24px;
+            box-shadow: 0 0 35px rgba(2, 132, 199, 0.5);
+            margin-bottom: 25px;
+            object-fit: cover;
+        }
+
+        #installModal h2 {
+            font-size: 24px;
+            margin-bottom: 12px;
+            color: var(--accent);
+        }
+
+        #installModal p {
+            font-size: 15px;
+            color: #cbd5e1;
+            max-width: 400px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        #installBtn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #ffffff;
+            border: none;
+            padding: 14px 36px;
+            font-size: 17px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(2, 132, 199, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #installBtn:hover {
+            transform: scale(1.04);
+            box-shadow: 0 0 25px rgba(2, 132, 199, 0.7);
         }
 
         /* --- Header Navigation --- */
@@ -529,7 +596,7 @@
             color: #fde047;
         }
 
-        /* --- Modals (Responsive Controlled) --- */
+        /* --- Modals --- */
         .modal {
             display: none;
             position: fixed;
@@ -741,7 +808,7 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* --- MEDIA QUERIES FOR SMALL SCREENS & PHONES --- */
+        /* --- MEDIA QUERIES FOR SMALL SCREENS --- */
         @media (max-width: 768px) {
             .nav-container {
                 justify-content: center;
@@ -760,7 +827,7 @@
 
         @media (max-width: 480px) {
             .products-grid {
-                grid-template-columns: repeat(2, 1fr); /* Elegant 2 columns for mobile */
+                grid-template-columns: repeat(2, 1fr);
                 gap: 0.6rem;
             }
             .product-card { border-radius: 12px; }
@@ -768,7 +835,7 @@
             .product-info { padding: 0.6rem; }
             .product-title { font-size: 0.88rem; }
             .price-container { padding: 0.4rem; font-size: 0.75rem; }
-            .buy-actions { grid-template-columns: 1fr; } /* Stack buy buttons on small screens */
+            .buy-actions { grid-template-columns: 1fr; }
             .btn-buy-option { padding: 0.4rem; font-size: 0.72rem; }
             
             .search-box input { padding: 0.75rem 1rem 0.75rem 2.5rem; font-size: 0.85rem; }
@@ -777,6 +844,14 @@
     </style>
 </head>
 <body>
+
+    <!-- شاشة التثبيت الإجبارية (PWA Install Gate) -->
+    <div id="installModal">
+        <img src="icon.png" alt="صيدلية الهدى" onerror="this.src='https://via.placeholder.com/160?text=صيدلية+الهدى'">
+        <h2>تطبيق صيدلية الهدى</h2>
+        <p>يرجى تثبيت التطبيق على جهازك للمتابعة والدخول إلى كافة خدمات الصيدلية بشكل مباشر.</p>
+        <button id="installBtn"><i class="fa-solid fa-download"></i> تثبيت التطبيق الآن</button>
+    </div>
 
     <!-- Header Navigation -->
     <header>
@@ -1085,6 +1160,47 @@
 
     <!-- JavaScript Application Logic -->
     <script>
+        // --- PWA Mandatory Installation Screen Logic ---
+        let deferredPrompt;
+        const installOverlay = document.getElementById('installModal');
+        const installBtn = document.getElementById('installBtn');
+
+        // تسجيل الـ Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Registration error:', err));
+        }
+
+        // التحقق هل تم فتح الموقع كـ تطبيق مثبت (Standalone) أم عبر المتصفح
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+
+        if (isStandalone) {
+            // إخفاء شاشة التثبيت وإبراز محتوى الموقع فوراً عند الفتح من التطبيق المثبت
+            installOverlay.style.display = 'none';
+        }
+
+        // التقاط حدث التثبيت عند الفتح عبر المتصفح
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    installOverlay.innerHTML = `
+                        <img src="icon.png" alt="صيدلية الهدى" onerror="this.src='https://via.placeholder.com/160?text=صيدلية+الهدى'">
+                        <h2 style="color: #10b981;">تم التثبيت بنجاح!</h2>
+                        <p>يرجى الخروج وفتح التطبيق من الشاشة الرئيسية لجهازك للاستخدام المباشر.</p>
+                    `;
+                }
+                deferredPrompt = null;
+            } else {
+                alert('لتثبيت التطبيق على جهازك:\n- على أندرويد: اضغط زر القائمة (⋮) ثم اختر "إضافة إلى الشاشة الرئيسية"\n- على آيفون (Safari): اضغط زر المشاركة (Share) ثم اختر "إضافة إلى الشاشة الرئيسية"');
+            }
+        });
+
         // Local state & Admin Password
         let adminPassword = localStorage.getItem("huda_pharmacy_admin_pass") || "1234";
 
