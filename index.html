@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>صيدلية الهدى | تكريت شارع الأربعين</title>
 
+    <!-- أيقونة الموقع المرفوعة على جيت هاب -->
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+
     <!-- خط Cairo ورسومات FontAwesome -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -112,7 +116,7 @@
         }
 
         .install-title {
-            color: #10b981;
+            color: #38bdf8;
             font-size: 1.7rem;
             font-weight: 800;
             margin-bottom: 0.8rem;
@@ -870,12 +874,12 @@
                 <span>صيدلية الهدى</span>
             </div>
             
-            <h2 class="install-title" id="installStatusTitle">تم التثبيت بنجاح!</h2>
+            <h2 class="install-title" id="installStatusTitle">تثبيت تطبيق صيدلية الهدى</h2>
             <p class="install-desc" id="installStatusDesc">
-                يرجى الخروج وفتح التطبيق من الشاشة الرئيسية لجهازك للاستخدام المباشر.
+                اضغط على الزر أدناه لتثبيت التطبيق مباشرة على جهازك لسهولة الاستخدام.
             </p>
 
-            <button id="pwaInstallBtn" class="btn-install-app" style="display: none;" onclick="triggerPwaInstall()">
+            <button id="pwaInstallBtn" class="btn-install-app" style="display: inline-flex;" onclick="triggerPwaInstall()">
                 <i class="fa-solid fa-download"></i> تثبيت التطبيق الآن
             </button>
         </div>
@@ -1182,8 +1186,15 @@
 
     <!-- JavaScript Application Logic & Firebase Integration -->
     <script>
-        // --- 0. إعدادات وتوليد ملف PWA Manifest تلقائياً مرجوع لأيقونة المشروع الأصلي ---
+        // --- 0. إنشاء ملف Manifest ديناميكياً بالإشارة المباشرة إلى icon.png المرفوعة على جيت هاب ---
         (function injectPWAManifest() {
+            // حذف أي رابط manifest سابق لعدم التضارب
+            const oldManifest = document.querySelector('link[rel="manifest"]');
+            if (oldManifest) oldManifest.remove();
+
+            // الحصول على الرابط المباشر الكامل لملف icon.png الموجود على جيت هاب
+            const absoluteIconUrl = new URL('icon.png', window.location.href).href;
+
             const manifest = {
                 "name": "صيدلية الهدى",
                 "short_name": "صيدلية الهدى",
@@ -1193,20 +1204,28 @@
                 "theme_color": "#0284c7",
                 "icons": [
                     {
-                        "src": "icon.png",
+                        "src": absoluteIconUrl,
+                        "sizes": "192x192",
+                        "type": "image/png",
+                        "purpose": "any maskable"
+                    },
+                    {
+                        "src": absoluteIconUrl,
                         "sizes": "512x512",
-                        "type": "image/png"
+                        "type": "image/png",
+                        "purpose": "any maskable"
                     }
                 ]
             };
-            const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+
+            const blob = new Blob([JSON.stringify(manifest)], {type: 'application/manifest+json'});
             const link = document.createElement('link');
             link.rel = 'manifest';
             link.href = URL.createObjectURL(blob);
             document.head.appendChild(link);
         })();
 
-        // --- إدارة منطق التثبيت الأجباري PWA ---
+        // --- إدارة زر PWA وشاشة التثبيت ---
         let deferredPrompt = null;
 
         function checkStandaloneMode() {
@@ -1223,16 +1242,6 @@
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            const installBtn = document.getElementById("pwaInstallBtn");
-            const statusTitle = document.getElementById("installStatusTitle");
-            const statusDesc = document.getElementById("installStatusDesc");
-            
-            if (installBtn) installBtn.style.display = "inline-flex";
-            if (statusTitle) {
-                statusTitle.innerText = "تثبيت تطبيق صيدلية الهدى";
-                statusTitle.style.color = "#38bdf8";
-            }
-            if (statusDesc) statusDesc.innerText = "اضغط على الزر أدناه لتثبيت التطبيق مباشرة على جهازك لسهولة الاستخدام.";
         });
 
         function triggerPwaInstall() {
@@ -1244,6 +1253,9 @@
                     }
                     deferredPrompt = null;
                 });
+            } else {
+                // في حال فتح التطبيق من متصفح لا يدعم النافذة المباشرة تلقائياً
+                alert("اضغط على خيارات المتصفح (⋮) ثم اختر (إضافة إلى الشاشة الرئيسية / Install app) لتثبيت التطبيق مباشرة.");
             }
         }
 
